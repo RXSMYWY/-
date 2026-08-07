@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>于晨阳 · 创意开发者作品集</title>
+<meta name="description" content="于晨阳 — 创意开发者与 UI/UX 设计师，专注于 Web 开发、交互动效与品牌体验。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23bef264'/%3E%3Ctext x='50' y='70' font-size='58' font-family='Arial' font-weight='bold' text-anchor='middle' fill='%23141505'%3EY%3C/text%3E%3C/svg%3E">
+<script>
+/* 尽早应用主题，避免闪烁 */
+try{var t=localStorage.getItem('yz-theme');if(t==='light'){document.documentElement.classList.remove('dark');}else{document.documentElement.classList.add('dark');}}catch(e){document.documentElement.classList.add('dark');}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Noto+Sans+SC:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<style type="text/tailwindcss">
+@custom-variant dark (&:where(.dark, .dark *));
+</style>
+<style>
+/* ============ 主题变量 ============ */
+:root{
+  --bg:#f4f3ee; --bg2:#ebe9e1; --surface:#ffffff; --surface2:#f6f5ef;
+  --text:#151513; --muted:#6a695f; --line:rgba(21,21,19,.10);
+  --accent:#4d7c0f; --accent2:#7c3aed; --accent-ink:#ffffff;
+  --orb:.45; --glass:rgba(255,255,255,.7);
+}
+.dark{
+  --bg:#0b0b0d; --bg2:#101013; --surface:#141417; --surface2:#1b1b1f;
+  --text:#f3f3ee; --muted:#9c9b92; --line:rgba(255,255,255,.09);
+  --accent:#bef264; --accent2:#a78bfa; --accent-ink:#141505;
+  --orb:.3; --glass:rgba(11,11,13,.7);
+}
+/* ============ 基础 ============ */
+html{scroll-behavior:smooth;scroll-padding-top:90px}
+body{font-family:'Noto Sans SC',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;transition:background-color .5s ease,color .5s ease}
+body.loading{overflow:hidden}
+::selection{background:var(--accent);color:var(--accent-ink)}
+::-webkit-scrollbar{width:10px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:color-mix(in srgb,var(--accent) 55%,transparent);border-radius:8px;border:2px solid var(--bg)}
+.font-display{font-family:'Syne','Noto Sans SC',sans-serif}
+.mono{font-family:'JetBrains Mono',monospace}
+.tx{color:var(--text)} .mut{color:var(--muted)} .acc{color:var(--accent)}
+.bg-base{background-color:var(--bg)} .bg-soft{background-color:var(--bg2)} .bg-card{background-color:var(--surface)}
+.bd{border-color:var(--line)}
+.display-1{font-size:clamp(2.9rem,8vw,6.2rem);line-height:1.04;letter-spacing:-.02em}
+.display-2{font-size:clamp(1.9rem,4.2vw,3.2rem);line-height:1.12;letter-spacing:-.01em}
+.grad-text{background:linear-gradient(92deg,var(--accent),var(--accent2),var(--accent));background-size:220% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:gradMove 7s linear infinite}
+@keyframes gradMove{to{background-position:220% center}}
+.text-stroke{-webkit-text-stroke:1.5px var(--text);color:transparent;opacity:.9}
+@media (min-width:768px){.text-stroke{-webkit-text-stroke:2px var(--text)}}
+/* 噪点 */
+.noise{position:fixed;inset:0;z-index:90;pointer-events:none;opacity:.05;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>")}
+/* ============ 加载页 ============ */
+#preloader{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;background:var(--bg);transition:transform .85s cubic-bezier(.76,0,.24,1) .1s,visibility 0s 1s}
+#preloader.done{transform:translateY(-101%);visibility:hidden}
+/* ============ 进度条 / 光标 ============ */
+#progress{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));z-index:150}
+#cursorDot,#cursorRing{position:fixed;top:0;left:0;pointer-events:none;z-index:300;border-radius:50%;transform:translate(-50%,-50%)}
+#cursorDot{width:7px;height:7px;background:var(--accent)}
+#cursorRing{width:38px;height:38px;border:1.5px solid var(--accent);opacity:.6;transition:width .3s,height .3s,opacity .3s,background .3s}
+#cursorRing.grow{width:64px;height:64px;opacity:.25;background:var(--accent)}
+@media (pointer:coarse){#cursorDot,#cursorRing{display:none}}
+/* ============ 导航 ============ */
+#header{position:fixed;top:0;left:0;right:0;z-index:100;transition:all .4s ease}
+#header.scrolled{background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+.nav-link{position:relative;padding:.35rem 0;font-size:.92rem;color:var(--muted);transition:color .3s}
+.nav-link::after{content:'';position:absolute;left:0;bottom:0;height:2px;width:100%;background:var(--accent);transform:scaleX(0);transform-origin:right;transition:transform .35s cubic-bezier(.16,1,.3,1)}
+.nav-link:hover,.nav-link.active{color:var(--text)}
+.nav-link:hover::after,.nav-link.active::after{transform:scaleX(1);transform-origin:left}
+.nav-link.active{color:var(--accent)}
+#mobileMenu{position:fixed;inset:0;z-index:95;background:var(--glass);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);display:flex;flex-direction:column;justify-content:center;padding:0 2rem;opacity:0;visibility:hidden;transition:opacity .45s ease,visibility 0s .45s}
+#mobileMenu.open{opacity:1;visibility:visible;transition:opacity .45s ease}
+#mobileMenu a.m-link{font-family:'Syne','Noto Sans SC',sans-serif;font-weight:800;font-size:clamp(1.8rem,7vw,2.6rem);padding:.55rem 0;color:var(--text);display:flex;align-items:baseline;gap:1rem;transform:translateY(24px);opacity:0;transition:all .5s cubic-bezier(.16,1,.3,1)}
+#mobileMenu.open a.m-link{transform:none;opacity:1}
+#mobileMenu a.m-link span.n{font-family:'JetBrains Mono',monospace;font-size:.85rem;color:var(--accent)}
+.theme-toggle .i-sun{display:none}.dark .theme-toggle .i-sun{display:inline-flex}.dark .theme-toggle .i-moon{display:none}
+/* ============ 按钮 ============ */
+.btn{display:inline-flex;align-items:center;gap:.6rem;font-weight:600;border-radius:999px;padding:.9rem 1.9rem;font-size:.95rem;transition:all .35s cubic-bezier(.16,1,.3,1);cursor:pointer}
+.btn-primary{background:var(--accent);color:var(--accent-ink)}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 14px 34px -10px color-mix(in srgb,var(--accent) 60%,transparent)}
+.btn-ghost{border:1px solid var(--line);color:var(--text);background:transparent}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-3px)}
+.chip{display:inline-flex;align-items:center;gap:.4rem;border:1px solid var(--line);border-radius:999px;padding:.34rem .85rem;font-size:.78rem;color:var(--muted);background:color-mix(in srgb,var(--surface) 60%,transparent);transition:all .3s}
+a.chip:hover,.chip.hoverable:hover{border-color:var(--accent);color:var(--accent)}
+/* ============ Hero ============ */
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:64px 64px;-webkit-mask-image:radial-gradient(ellipse 90% 65% at 50% 0%,black 25%,transparent 78%);mask-image:radial-gradient(ellipse 90% 65% at 50% 0%,black 25%,transparent 78%)}
+.orb{position:absolute;border-radius:50%;filter:blur(100px);opacity:var(--orb);pointer-events:none;will-change:transform}
+.orb-1{width:520px;height:520px;background:radial-gradient(circle,var(--accent),transparent 68%);top:-160px;right:-100px;animation:float1 13s ease-in-out infinite alternate}
+.orb-2{width:420px;height:420px;background:radial-gradient(circle,var(--accent2),transparent 68%);bottom:-140px;left:-120px;animation:float2 16s ease-in-out infinite alternate}
+@keyframes float1{to{transform:translate(-50px,60px) scale(1.12)}}
+@keyframes float2{to{transform:translate(60px,-50px) scale(1.08)}}
+.h-anim{opacity:0;transform:translateY(30px);transition:opacity .9s cubic-bezier(.16,1,.3,1) var(--d,0s),transform .9s cubic-bezier(.16,1,.3,1) var(--d,0s)}
+body.loaded .h-anim{opacity:1;transform:none}
+.caret{display:inline-block;width:3px;height:1.05em;background:var(--accent);margin-left:4px;vertical-align:-.15em;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.spin-slow{animation:spin 16s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.pulse-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);position:relative}
+.pulse-dot::after{content:'';position:absolute;inset:-4px;border-radius:50%;border:1.5px solid var(--accent);animation:pulse 1.8s ease-out infinite}
+@keyframes pulse{0%{transform:scale(.5);opacity:1}100%{transform:scale(1.5);opacity:0}}
+.scroll-hint{width:26px;height:44px;border:2px solid var(--muted);border-radius:20px;display:flex;justify-content:center;padding-top:8px}
+.scroll-hint span{width:4px;height:9px;border-radius:4px;background:var(--accent);animation:wheel 1.6s ease infinite}
+@keyframes wheel{0%{transform:translateY(0);opacity:1}70%{transform:translateY(14px);opacity:0}100%{opacity:0}}
+/* ============ Marquee ============ */
+.marquee{overflow:hidden;white-space:nowrap;transform:rotate(-1.2deg)}
+.mq-track{display:inline-flex;animation:mq 26s linear infinite;will-change:transform}
+.marquee:hover .mq-track{animation-play-state:paused}
+@keyframes mq{to{transform:translateX(-50%)}}
+.mq-chunk{display:inline-flex;align-items:center;gap:2.6rem;padding-right:2.6rem}
+/* ============ 通用 Reveal ============ */
+.reveal{opacity:0;transform:translateY(46px);transition:opacity 1s cubic-bezier(.16,1,.3,1) var(--d,0s),transform 1s cubic-bezier(.16,1,.3,1) var(--d,0s)}
+.reveal.rv-left{transform:translateX(-56px)}
+.reveal.rv-right{transform:translateX(56px)}
+.reveal.rv-zoom{transform:scale(.9)}
+.reveal.in{opacity:1;transform:none}
+.sec-label{display:flex;align-items:center;gap:.9rem;font-family:'JetBrains Mono',monospace;font-size:.85rem;letter-spacing:.12em;color:var(--muted);text-transform:uppercase}
+.sec-label .num{color:var(--accent);font-weight:700}
+.sec-label .ln{height:1px;width:56px;background:linear-gradient(90deg,var(--accent),transparent)}
+/* ============ 服务卡片 ============ */
+.svc{position:relative;border:1px solid var(--line);border-radius:1.4rem;padding:2rem;background:var(--surface);overflow:hidden;transition:all .45s cubic-bezier(.16,1,.3,1)}
+.svc::after{content:'';position:absolute;left:0;top:0;height:3px;width:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));transform:scaleX(0);transform-origin:left;transition:transform .5s cubic-bezier(.16,1,.3,1)}
+.svc:hover{transform:translateY(-8px);border-color:color-mix(in srgb,var(--accent) 45%,var(--line));box-shadow:0 24px 50px -24px rgba(0,0,0,.45)}
+.svc:hover::after{transform:scaleX(1)}
+.svc .ghost{position:absolute;right:1.1rem;top:.6rem;font-family:'Syne',sans-serif;font-weight:800;font-size:4.4rem;line-height:1;color:var(--text);opacity:.05;transition:all .4s}
+.svc:hover .ghost{opacity:.12;color:var(--accent)}
+.svc .ic{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent);transition:all .4s}
+.svc:hover .ic{transform:rotate(-8deg) scale(1.08);background:var(--accent);color:var(--accent-ink)}
+/* ============ 技能 ============ */
+.skill-fill{height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width 1.5s cubic-bezier(.16,1,.3,1) .15s;position:relative}
+.skill-fill::after{content:'';position:absolute;right:0;top:50%;transform:translate(40%,-50%);width:12px;height:12px;border-radius:50%;background:var(--accent);box-shadow:0 0 12px var(--accent)}
+/* ============ 时间线 ============ */
+.timeline{position:relative}
+.timeline::before{content:'';position:absolute;left:7px;top:8px;bottom:8px;width:2px;background:linear-gradient(var(--accent),color-mix(in srgb,var(--accent) 15%,transparent))}
+.t-item{position:relative;padding:0 0 2.2rem 2.6rem}
+.t-item:last-child{padding-bottom:0}
+.t-item::before{content:'';position:absolute;left:0;top:7px;width:16px;height:16px;border-radius:50%;background:var(--bg);border:2.5px solid var(--accent);transition:all .35s}
+.t-item:hover::before{background:var(--accent);box-shadow:0 0 0 7px color-mix(in srgb,var(--accent) 18%,transparent)}
+.tab-btn{border:1px solid var(--line);border-radius:999px;padding:.7rem 1.7rem;font-weight:600;font-size:.92rem;color:var(--muted);transition:all .35s;cursor:pointer;display:inline-flex;align-items:center;gap:.55rem;background:transparent}
+.tab-btn.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);box-shadow:0 10px 26px -12px color-mix(in srgb,var(--accent) 65%,transparent)}
+.tab-panel{display:none}
+.tab-panel.show{display:block;animation:fadeUp .55s cubic-bezier(.16,1,.3,1)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+/* ============ 筛选 / 卡片 ============ */
+.filter-btn{border:1px solid var(--line);border-radius:999px;padding:.6rem 1.4rem;font-size:.88rem;font-weight:500;color:var(--muted);transition:all .3s;cursor:pointer;background:transparent}
+.filter-btn:hover{color:var(--text);border-color:var(--accent)}
+.filter-btn.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.project-card,.video-card{transition:opacity .35s ease,transform .35s ease}
+.card-hide{opacity:0!important;transform:scale(.88)!important;pointer-events:none}
+.art{position:relative;aspect-ratio:4/3;overflow:hidden;border-radius:1.2rem 1.2rem 0 0}
+.art-inner{position:absolute;inset:0;transition:transform .7s cubic-bezier(.16,1,.3,1)}
+.project-card:hover .art-inner{transform:scale(1.08)}
+.art::after{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);background-size:34px 34px;pointer-events:none}
+.art .big-no{position:absolute;left:1.4rem;bottom:.4rem;font-family:'Syne',sans-serif;font-weight:800;font-size:5.2rem;color:rgba(255,255,255,.14);line-height:1}
+.art .art-icon{position:absolute;right:1.3rem;top:1.3rem;width:52px;height:52px;border-radius:14px;background:rgba(255,255,255,.12);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;color:#fff}
+.a1{background:radial-gradient(130% 130% at 15% 0%,#3f6212 0%,transparent 55%),radial-gradient(110% 110% at 90% 90%,#16653466 0%,transparent 55%),linear-gradient(135deg,#0c1a0a,#1a2e05)}
+.a2{background:radial-gradient(130% 130% at 85% 0%,#7c3aed55 0%,transparent 55%),radial-gradient(110% 110% at 10% 95%,#db277744 0%,transparent 55%),linear-gradient(135deg,#160a2e,#2a1a05)}
+.a3{background:radial-gradient(130% 130% at 20% 100%,#b4530955 0%,transparent 55%),radial-gradient(110% 110% at 90% 10%,#78716c44 0%,transparent 55%),linear-gradient(135deg,#1c1207,#292019)}
+.a4{background:radial-gradient(130% 130% at 80% 100%,#0e749055 0%,transparent 55%),radial-gradient(110% 110% at 10% 0%,#38bdf833 0%,transparent 55%),linear-gradient(135deg,#061a22,#0a2e3d)}
+.a5{background:radial-gradient(130% 130% at 15% 10%,#be123c55 0%,transparent 55%),radial-gradient(110% 110% at 90% 90%,#f9731644 0%,transparent 55%),linear-gradient(135deg,#22060f,#2e0a1a)}
+.a6{background:radial-gradient(130% 130% at 85% 15%,#4f46e555 0%,transparent 55%),radial-gradient(110% 110% at 10% 90%,#a3e63533 0%,transparent 55%),linear-gradient(135deg,#0d0a24,#141433)}
+.ovl{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.72),transparent 55%);opacity:0;transition:opacity .5s}
+.project-card:hover .ovl{opacity:1}
+.go-btn{position:absolute;right:1.2rem;bottom:1.2rem;width:52px;height:52px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;transform:translateY(14px) scale(.7);opacity:0;transition:all .45s cubic-bezier(.16,1,.3,1)}
+.project-card:hover .go-btn{transform:none;opacity:1}
+/* ============ 视频 ============ */
+.vc-frame{position:relative;aspect-ratio:16/9;overflow:hidden;border-radius:1.2rem;border:1px solid var(--line);background:#000}
+.vc-frame video{width:100%;height:100%;object-fit:cover;transition:transform .7s cubic-bezier(.16,1,.3,1)}
+.video-card:hover .vc-frame video{transform:scale(1.05)}
+.vc-shade{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.55),transparent 45%);pointer-events:none}
+.vc-play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.85);width:64px;height:64px;border-radius:50%;background:color-mix(in srgb,var(--accent) 92%,transparent);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;opacity:0;transition:all .4s cubic-bezier(.16,1,.3,1);box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 45%,transparent)}
+.video-card:hover .vc-play{opacity:1;transform:translate(-50%,-50%) scale(1);box-shadow:0 0 0 12px color-mix(in srgb,var(--accent) 18%,transparent)}
+.vc-badge{position:absolute;font-family:'JetBrains Mono',monospace;font-size:.72rem;padding:.28rem .6rem;border-radius:.55rem;background:rgba(0,0,0,.6);color:#fff;backdrop-filter:blur(4px)}
+/* ============ 模态框 ============ */
+#videoModal{position:fixed;inset:0;z-index:120;display:none;align-items:center;justify-content:center;padding:1rem}
+#videoModal.show{display:flex}
+#videoModal .backdrop{position:absolute;inset:0;background:rgba(0,0,0,.82);backdrop-filter:blur(8px);animation:fadeIn .35s ease}
+#videoModal .panel{position:relative;width:100%;max-width:56rem;background:var(--surface);border:1px solid var(--line);border-radius:1.3rem;overflow:hidden;box-shadow:0 40px 90px -30px rgba(0,0,0,.7);animation:pop .45s cubic-bezier(.16,1,.3,1)}
+@keyframes fadeIn{from{opacity:0}}
+@keyframes pop{from{opacity:0;transform:translateY(34px) scale(.94)}to{opacity:1;transform:none}}
+/* ============ 表单 ============ */
+.field{width:100%;background:var(--surface2);border:1px solid var(--line);border-radius:.9rem;padding:.95rem 1.15rem;font-size:.95rem;color:var(--text);transition:all .3s;outline:none;font-family:inherit}
+.field:focus{border-color:var(--accent);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 16%,transparent)}
+.field.err-b{border-color:#ef4444;box-shadow:0 0 0 4px rgba(239,68,68,.14)}
+.err-msg{display:none;color:#ef4444;font-size:.78rem;margin-top:.35rem}
+.err-msg.show{display:block}
+select.field{appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2'><path d='m6 9 6 6 6-6'/></svg>");background-repeat:no-repeat;background-position:right 1rem center}
+/* ============ Toast / 回顶 ============ */
+#toast{position:fixed;bottom:1.6rem;left:50%;transform:translate(-50%,120%);z-index:160;background:var(--surface);border:1px solid var(--accent);color:var(--text);border-radius:999px;padding:.85rem 1.5rem;display:flex;align-items:center;gap:.7rem;font-size:.9rem;box-shadow:0 18px 40px -14px rgba(0,0,0,.5);opacity:0;transition:all .5s cubic-bezier(.16,1,.3,1)}
+#toast.show{transform:translate(-50%,0);opacity:1}
+#toTop{position:fixed;right:1.4rem;bottom:1.4rem;z-index:80;width:50px;height:50px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;box-shadow:0 12px 30px -10px color-mix(in srgb,var(--accent) 60%,transparent);transform:translateY(90px);opacity:0;transition:all .45s cubic-bezier(.16,1,.3,1);cursor:pointer}
+#toTop.show{transform:none;opacity:1}
+#toTop:hover{transform:translateY(-4px)}
+.info-card{display:flex;align-items:center;gap:1.1rem;border:1px solid var(--line);border-radius:1.1rem;padding:1.1rem 1.3rem;background:var(--surface);transition:all .35s}
+.info-card:hover{transform:translateX(6px);border-color:var(--accent)}
+.soc{width:44px;height:44px;border-radius:12px;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--muted);transition:all .3s}
+.soc:hover{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);transform:translateY(-4px)}
+.f-link{color:var(--muted);transition:all .3s;font-size:.92rem}
+.f-link:hover{color:var(--accent);padding-left:6px}
+
+/* ============ 可编辑模式样式 ============ */
+[data-edit]{outline:none;border-radius:4px;transition:box-shadow .15s ease, background-color .15s ease}
+body.edit-mode [data-edit]:hover{box-shadow:0 0 0 1px color-mix(in srgb,var(--accent) 45%,transparent)}
+body.edit-mode [data-edit]:focus{box-shadow:0 0 0 2px var(--accent);background:color-mix(in srgb,var(--accent) 8%,transparent)}
+body.edit-mode [data-edit]:empty::before{content:'点击输入…';color:var(--muted);opacity:.6}
+body:not(.edit-mode) [data-edit]{cursor:default}
+/* 浮动编辑面板 */
+#editPanel{position:fixed;left:1.4rem;bottom:1.4rem;z-index:130;display:flex;flex-direction:column;gap:.5rem;align-items:flex-start}
+#editPanel .ep-btn{display:inline-flex;align-items:center;gap:.45rem;border:1px solid var(--line);border-radius:999px;padding:.6rem 1rem;font-size:.8rem;font-weight:600;background:var(--surface);color:var(--text);box-shadow:0 10px 28px -12px rgba(0,0,0,.5);cursor:pointer;transition:all .3s;backdrop-filter:blur(8px)}
+#editPanel .ep-btn:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-2px)}
+#editPanel .ep-btn.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+#editPanel .ep-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 60%,transparent);animation:epPulse 1.8s ease-out infinite}
+@keyframes epPulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 60%,transparent)}100%{box-shadow:0 0 0 8px transparent}}
+@media (max-width:640px){#editPanel{left:.8rem;bottom:.8rem}#editPanel .ep-btn{font-size:.74rem;padding:.5rem .8rem}}
+</style>
+</head>
+<body class="loading bg-base tx antialiased edit-mode">
+
+<!-- 加载页 -->
+<div id="preloader">
+  <div class="text-center">
+    <div class="font-display font-extrabold text-5xl tracking-tight">热心市民YWY<span class="acc">.</span></div>
+    <div class="mt-6 h-[2px] w-52 mx-auto bg-soft rounded-full overflow-hidden" style="background:var(--line)"><div id="preBar" class="h-full w-0" style="background:var(--accent);transition:width .2s"></div></div>
+    <div id="preNum" class="mt-3 mono text-sm mut">0%</div>
+  </div>
+</div>
+
+<div id="progress"></div>
+<div id="cursorDot"></div><div id="cursorRing"></div>
+<div class="noise"></div>
+
+<!-- ============ 导航 ============ -->
+<header id="header">
+  <nav class="max-w-7xl mx-auto px-6 h-[76px] flex items-center justify-between">
+    <a href="#home" class="font-display font-extrabold text-2xl tracking-tight"><span data-edit="logo" contenteditable="true">热心市民YWY</span><span class="acc">.</span></a>
+    <ul class="hidden lg:flex items-center gap-7">
+      <li><a class="nav-link" href="#home">首页</a></li>
+      <li><a class="nav-link" href="#about">关于我</a></li>
+      <li><a class="nav-link" href="#services">服务</a></li>
+      <li><a class="nav-link" href="#skills">技能</a></li>
+      <li><a class="nav-link" href="#experience">经历</a></li>
+      <li><a class="nav-link" href="#projects">作品</a></li>
+      <li><a class="nav-link" href="#videos">视频</a></li>
+      <li><a class="nav-link" href="#contact">联系</a></li>
+    </ul>
+    <div class="flex items-center gap-3">
+      <button id="themeBtn" class="theme-toggle soc !w-11 !h-11 !rounded-full" aria-label="切换主题">
+        <svg class="i-sun" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        <svg class="i-moon" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+      </button>
+      <a href="#contact" class="btn btn-primary !py-2.5 !px-5 hidden md:inline-flex text-sm">雇佣我</a>
+      <button id="menuBtn" class="lg:hidden soc !w-11 !h-11 !rounded-full" aria-label="打开菜单">
+        <svg id="icoMenu" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        <svg id="icoClose" class="hidden" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+  </nav>
+</header>
+
+<!-- 移动端菜单 -->
+<div id="mobileMenu">
+  <a class="m-link" href="#home" style="transition-delay:.06s"><span class="n">01</span>首页</a>
+  <a class="m-link" href="#about" style="transition-delay:.1s"><span class="n">02</span>关于我</a>
+  <a class="m-link" href="#services" style="transition-delay:.14s"><span class="n">03</span>服务</a>
+  <a class="m-link" href="#skills" style="transition-delay:.18s"><span class="n">04</span>技能</a>
+  <a class="m-link" href="#experience" style="transition-delay:.22s"><span class="n">05</span>经历</a>
+  <a class="m-link" href="#projects" style="transition-delay:.26s"><span class="n">06</span>作品</a>
+  <a class="m-link" href="#videos" style="transition-delay:.3s"><span class="n">07</span>视频</a>
+  <a class="m-link" href="#contact" style="transition-delay:.34s"><span class="n">08</span>联系</a>
+</div>
+
+<main>
+<!-- ============ 首页 Hero ============ -->
+<section id="home" class="relative min-h-screen flex items-center overflow-hidden pt-24 pb-16">
+  <div class="hero-grid"></div>
+  <div class="orb orb-1" data-px="30"></div>
+  <div class="orb orb-2" data-px="-40"></div>
+  <div class="max-w-7xl mx-auto px-6 w-full relative z-10">
+    <div class="grid lg:grid-cols-12 gap-12 items-center">
+      <div class="lg:col-span-7">
+        <div class="h-anim inline-flex items-center gap-2.5 chip !py-2 !px-4 mb-7" style="--d:.05s">
+          <span class="pulse-dot"></span><span class="mono text-xs tracking-wider" data-edit="hero-badge" contenteditable="true">可接受新项目合作 · AVAILABLE FOR WORK</span>
+        </div>
+        <p class="h-anim mono text-sm md:text-base mut mb-4" style="--d:.12s" data-edit="hero-welcome" contenteditable="true">// 你好，WELCOME — 我是</p>
+        <h1 class="h-anim font-display font-extrabold display-1" style="--d:.2s">
+          <span data-edit="hero-name" contenteditable="true">于晨阳</span><span class="acc">.</span><br>
+          <span class="text-stroke" data-edit="hero-role" contenteditable="true">创意开发者</span>
+        </h1>
+        <p class="h-anim mt-6 text-lg md:text-xl mut font-light" style="--d:.3s"><span data-edit="hero-focus-label" contenteditable="true">我专注于</span> <span id="typed" class="acc font-medium"></span><span class="caret"></span></p>
+        <p class="h-anim mt-5 max-w-xl mut leading-relaxed" style="--d:.38s" data-edit="hero-desc" contenteditable="true">5 年一线互联网大厂经验，现居杭州。我将设计思维与工程能力结合，为品牌打造兼具美感、性能与温度的数字体验。</p>
+        <div class="h-anim flex flex-wrap items-center gap-4 mt-9" style="--d:.46s">
+          <a href="#projects" class="btn btn-primary"><span data-edit="btn-projects" contenteditable="true">查看我的作品</span>
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>
+          </a>
+          <a href="#contact" class="btn btn-ghost"><span data-edit="btn-contact" contenteditable="true">联系我</span></a>
+        </div>
+        <div class="h-anim grid grid-cols-2 sm:grid-cols-4 gap-6 pt-9 mt-11 border-t bd" style="--d:.56s">
+          <div><div class="font-display font-extrabold text-3xl md:text-4xl"><span data-count="5" data-edit="stat-exp" contenteditable="true">0</span><span class="acc">+</span></div><p class="mut text-sm mt-1" data-edit="stat-exp-label" contenteditable="true">年行业经验</p></div>
+          <div><div class="font-display font-extrabold text-3xl md:text-4xl"><span data-count="120" data-edit="stat-proj" contenteditable="true">0</span><span class="acc">+</span></div><p class="mut text-sm mt-1" data-edit="stat-proj-label" contenteditable="true">完成项目</p></div>
+          <div><div class="font-display font-extrabold text-3xl md:text-4xl"><span data-count="48" data-edit="stat-cli" contenteditable="true">0</span><span class="acc">+</span></div><p class="mut text-sm mt-1" data-edit="stat-cli-label" contenteditable="true">满意客户</p></div>
+          <div><div class="font-display font-extrabold text-3xl md:text-4xl"><span data-count="15" data-edit="stat-award" contenteditable="true">0</span></div><p class="mut text-sm mt-1" data-edit="stat-award-label" contenteditable="true">设计奖项</p></div>
+        </div>
+      </div>
+      <div class="lg:col-span-5 relative h-anim" style="--d:.35s">
+        <div class="relative max-w-[420px] mx-auto">
+          <div class="absolute -inset-4 rounded-[2.6rem] border bd rotate-3 pointer-events-none"></div>
+          <div class="absolute -inset-4 rounded-[2.6rem] border pointer-events-none -rotate-2" style="border-color:color-mix(in srgb,var(--accent) 35%,transparent)"></div>
+          <div class="relative rounded-[2.2rem] overflow-hidden border bd shadow-2xl" id="portraitWrap" title="替换照片：把你的图片命名为 portrait.jpg 放入 images 文件夹即可">
+            <img src="images/portrait.jpg" alt="肖像" class="w-full aspect-[4/5] object-cover">
+            <div class="absolute inset-0" style="background:linear-gradient(to top,rgba(0,0,0,.35),transparent 40%)"></div>
+          </div>
+          <div class="absolute -left-6 top-10 chip !bg-[var(--glass)] backdrop-blur-md !py-2.5 !px-4 shadow-xl font-medium" style="animation:float2 6s ease-in-out infinite alternate">
+            <span class="acc mono font-bold" data-edit="hero-chip1a" contenteditable="true">React</span><span class="mut">/</span><span class="acc mono font-bold" data-edit="hero-chip1b" contenteditable="true">TypeScript</span>
+          </div>
+          <div class="absolute -right-5 bottom-24 chip !bg-[var(--glass)] backdrop-blur-md !py-2.5 !px-4 shadow-xl" style="animation:float1 7s ease-in-out infinite alternate">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span class="font-medium" data-edit="hero-chip2" contenteditable="true">杭州 · 远程协作</span>
+          </div>
+          <div class="absolute -bottom-8 -left-8 w-28 h-28 md:w-32 md:h-32">
+            <div class="absolute inset-0 rounded-full bg-card border bd shadow-xl flex items-center justify-center">
+              <svg class="spin-slow absolute inset-0 w-full h-full p-1.5" viewBox="0 0 100 100">
+                <defs><path id="circ" d="M50,50 m-38,0 a38,38 0 1,1 76,0 a38,38 0 1,1 -76,0"/></defs>
+                <text style="font-family:'JetBrains Mono',monospace;font-size:8.2px;letter-spacing:2.2px;fill:var(--muted)"><textPath href="#circ" data-edit="hero-spin" contenteditable="true">OPEN TO WORK · CREATIVE DEV · UI DESIGN · </textPath></text>
+              </svg>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="h-anim hidden md:flex justify-center mt-14" style="--d:.7s"><a href="#about" class="flex flex-col items-center gap-2 mut"><span class="mono text-[.68rem] tracking-[.25em]">SCROLL</span><span class="scroll-hint"><span></span></span></a></div>
+  </div>
+</section>
+
+<!-- ============ Marquee ============ -->
+<div class="marquee py-5 border-y bd" style="background:var(--accent);border-color:transparent">
+  <div class="mq-track font-display font-bold text-xl md:text-2xl" style="color:var(--accent-ink)">
+    <div class="mq-chunk" data-mq="0">
+      <span data-edit="mq-1" contenteditable="true">UI / UX 设计</span><span>✦</span>
+      <span data-edit="mq-2" contenteditable="true">前端开发</span><span>✦</span>
+      <span data-edit="mq-3" contenteditable="true">交互动效</span><span>✦</span>
+      <span data-edit="mq-4" contenteditable="true">品牌视觉</span><span>✦</span>
+      <span data-edit="mq-5" contenteditable="true">WebGL 创意</span><span>✦</span>
+      <span data-edit="mq-6" contenteditable="true">移动应用</span><span>✦</span>
+      <span data-edit="mq-7" contenteditable="true">设计系统</span><span>✦</span>
+    </div>
+    <div class="mq-chunk" data-mq="1" aria-hidden="true">
+      <span data-mqd="mq-1">UI / UX 设计</span><span>✦</span>
+      <span data-mqd="mq-2">前端开发</span><span>✦</span>
+      <span data-mqd="mq-3">交互动效</span><span>✦</span>
+      <span data-mqd="mq-4">品牌视觉</span><span>✦</span>
+      <span data-mqd="mq-5">WebGL 创意</span><span>✦</span>
+      <span data-mqd="mq-6">移动应用</span><span>✦</span>
+      <span data-mqd="mq-7">设计系统</span><span>✦</span>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 关于我 ============ -->
+<section id="about" class="py-24 md:py-32 relative overflow-hidden">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="grid lg:grid-cols-2 gap-14 lg:gap-20 items-center">
+      <div class="reveal rv-left relative order-2 lg:order-1">
+        <div class="relative rounded-[2rem] border bd bg-card p-6 md:p-8 shadow-2xl">
+          <div class="flex items-center gap-2 pb-4 border-b bd mb-5">
+            <span class="w-3 h-3 rounded-full" style="background:#f87171"></span>
+            <span class="w-3 h-3 rounded-full" style="background:#fbbf24"></span>
+            <span class="w-3 h-3 rounded-full" style="background:#34d399"></span>
+            <span class="mono text-xs mut ml-3" data-edit="code-file" contenteditable="true">about-me.js</span>
+          </div>
+          <pre class="mono text-[.82rem] md:text-[.88rem] leading-7 overflow-x-auto"><code data-edit="code-block" contenteditable="true"><span style="color:var(--accent2)">const</span> <span class="tx">热心市民YWY</span> <span class="mut">=</span> <span class="tx">{</span>
+  <span style="color:var(--accent)">role</span><span class="mut">:</span> <span style="color:#e8c07d">'创意开发者 / UI 设计师'</span><span class="mut">,</span>
+  <span style="color:var(--accent)">location</span><span class="mut">:</span> <span style="color:#e8c07d">'杭州 · 中国'</span><span class="mut">,</span>
+  <span style="color:var(--accent)">focus</span><span class="mut">:</span> <span class="tx">[</span><span style="color:#e8c07d">'Web 体验'</span><span class="mut">,</span> <span style="color:#e8c07d">'交互动效'</span><span class="mut">,</span> <span style="color:#e8c07d">'品牌视觉'</span><span class="tx">]</span><span class="mut">,</span>
+  <span style="color:var(--accent)">coffee</span><span class="mut">:</span> <span style="color:var(--accent2)">Infinity</span><span class="mut">,</span>
+  <span style="color:var(--accent)">hireable</span><span class="mut">:</span> <span style="color:var(--accent2)">true</span>
+<span class="tx">}</span><span class="mut">;</span></code></pre>
+          <div class="mt-5 flex flex-wrap gap-2">
+            <span class="chip" data-edit="tag-1" contenteditable="true">像素级还原</span>
+            <span class="chip" data-edit="tag-2" contenteditable="true">性能洁癖</span>
+            <span class="chip" data-edit="tag-3" contenteditable="true">细节控</span>
+            <span class="chip" data-edit="tag-4" contenteditable="true">终身学习</span>
+          </div>
+        </div>
+        <div class="absolute -bottom-7 -right-3 md:-right-7 rounded-2xl px-6 py-5 shadow-2xl rotate-2" style="background:var(--accent);color:var(--accent-ink)">
+          <div class="font-display font-extrabold text-3xl leading-none" data-edit="about-stat-num" contenteditable="true">5+</div>
+          <div class="text-xs mt-1 opacity-80 font-medium" data-edit="about-stat-label" contenteditable="true">年设计与开发经验</div>
+        </div>
+      </div>
+      <div class="order-1 lg:order-2">
+        <div class="reveal sec-label mb-5"><span class="num" data-edit="sec-about-num" contenteditable="true">01</span><span data-edit="sec-about" contenteditable="true">关于我</span><span class="ln"></span></div>
+        <h2 class="reveal font-display font-extrabold display-2" style="--d:.08s"><span data-edit="about-h2a" contenteditable="true">把复杂的问题，</span><br><span data-edit="about-h2b" contenteditable="true">变成</span><span class="grad-text" data-edit="about-h2c" contenteditable="true">优雅的产品</span></h2>
+        <p class="reveal mt-6 mut leading-relaxed" style="--d:.14s" data-edit="about-p1" contenteditable="true">我是于晨阳，一名穿梭于设计与代码之间的创意开发者。曾就职于字节跳动与蚂蚁集团，参与过亿级用户产品的前端架构与设计系统建设；如今作为独立开发者，与全球品牌一起探索数字体验的边界。</p>
+        <p class="reveal mt-4 mut leading-relaxed" style="--d:.2s" data-edit="about-p2" contenteditable="true">我相信最好的产品诞生于美学与工程的交汇处——既要让人一见钟情，也要经得起百万次点击。</p>
+        <ul class="reveal mt-7 grid sm:grid-cols-2 gap-3.5" style="--d:.26s">
+          <li class="flex items-center gap-2.5 text-sm"><span class="w-5 h-5 rounded-full flex items-center justify-center shrink-0" style="background:color-mix(in srgb,var(--accent) 15%,transparent)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span data-edit="about-feat-1" contenteditable="true">设计驱动的开发流程</span></li>
+          <li class="flex items-center gap-2.5 text-sm"><span class="w-5 h-5 rounded-full flex items-center justify-center shrink-0" style="background:color-mix(in srgb,var(--accent) 15%,transparent)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span data-edit="about-feat-2" contenteditable="true">像素级视觉还原</span></li>
+          <li class="flex items-center gap-2.5 text-sm"><span class="w-5 h-5 rounded-full flex items-center justify-center shrink-0" style="background:color-mix(in srgb,var(--accent) 15%,transparent)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span data-edit="about-feat-3" contenteditable="true">性能与可访问性优先</span></li>
+          <li class="flex items-center gap-2.5 text-sm"><span class="w-5 h-5 rounded-full flex items-center justify-center shrink-0" style="background:color-mix(in srgb,var(--accent) 15%,transparent)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span data-edit="about-feat-4" contenteditable="true">长期维护与陪伴</span></li>
+        </ul>
+        <div class="reveal mt-9 flex flex-wrap items-center gap-5" style="--d:.32s">
+          <button id="resumeBtn" class="btn btn-primary"><span data-edit="btn-resume" contenteditable="true">下载简历</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4m4-5 5 5 5-5m-5 5V3"/></svg>
+          </button>
+          <div><div class="font-display font-bold text-2xl" style="font-style:italic" data-edit="about-sign" contenteditable="true">热心市民YWY</div><div class="mono text-xs mut mt-.5" data-edit="about-sign-sub" contenteditable="true">CREATIVE DEVELOPER</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 服务 ============ -->
+<section id="services" class="py-24 md:py-32 bg-soft">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-14">
+      <div>
+        <div class="reveal sec-label mb-5"><span class="num" data-edit="sec-svc-num" contenteditable="true">02</span><span data-edit="sec-svc" contenteditable="true">我的服务</span><span class="ln"></span></div>
+        <h2 class="reveal font-display font-extrabold display-2" style="--d:.08s"><span data-edit="svc-h2a" contenteditable="true">我能为你</span><span class="grad-text" data-edit="svc-h2b" contenteditable="true">做什么</span></h2>
+      </div>
+      <p class="reveal mut max-w-sm text-sm leading-relaxed" style="--d:.14s" data-edit="svc-intro" contenteditable="true">从概念到上线的一站式服务，每个环节都以作品级标准打磨。</p>
+    </div>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6" id="svcGrid">
+
+      <div class="svc reveal" style="--d:0s">
+        <span class="ghost" data-edit="svc1-no" contenteditable="true">01</span>
+        <div class="ic mb-6"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 18 6-6-6-6M8 6l-6 6 6 6"/></svg></div>
+        <h3 class="font-display font-bold text-xl mb-3" data-edit="svc1-t" contenteditable="true">Web 前端开发</h3>
+        <p class="mut text-sm leading-relaxed" data-edit="svc1-d" contenteditable="true">使用 React / Vue / TypeScript 构建高性能、可维护的现代 Web 应用，从落地页到复杂中后台。</p>
+        <a href="#contact" class="inline-flex items-center gap-2 mt-6 text-sm font-medium acc"><span data-edit="svc1-link" contenteditable="true">咨询此服务</span>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7 7 7-7 7"/></svg></a>
+      </div>
+
+      <div class="svc reveal" style="--d:.1s">
+        <span class="ghost" data-edit="svc2-no" contenteditable="true">02</span>
+        <div class="ic mb-6"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.93 0 1.65-.75 1.65-1.69 0-.44-.18-.84-.44-1.13-.25-.29-.43-.68-.43-1.12A1.68 1.68 0 0 1 14.46 16.5h2.03A5.5 5.5 0 0 0 22 11c0-5-4.5-9-10-9z"/></svg></div>
+        <h3 class="font-display font-bold text-xl mb-3" data-edit="svc2-t" contenteditable="true">UI / UX 设计</h3>
+        <p class="mut text-sm leading-relaxed" data-edit="svc2-d" contenteditable="true">以用户为中心的设计流程：用户研究、信息架构、线框图到高保真原型，让体验自然流畅。</p>
+        <a href="#contact" class="inline-flex items-center gap-2 mt-6 text-sm font-medium acc"><span data-edit="svc2-link" contenteditable="true">咨询此服务</span>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7 7 7-7 7"/></svg></a>
+      </div>
+
+      <div class="svc reveal" style="--d:.2s">
+        <span class="ghost" data-edit="svc3-no" contenteditable="true">03</span>
+        <div class="ic mb-6"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M12 18h.01"/></svg></div>
+        <h3 class="font-display font-bold text-xl mb-3" data-edit="svc3-t" contenteditable="true">移动应用开发</h3>
+        <p class="mut text-sm leading-relaxed" data-edit="svc3-d" contenteditable="true">React Native / Flutter 跨端方案，一次开发同时覆盖 iOS 与 Android，质感不输原生。</p>
+        <a href="#contact" class="inline-flex items-center gap-2 mt-6 text-sm font-medium acc"><span data-edit="svc3-link" contenteditable="true">咨询此服务</span>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7 7 7-7 7"/></svg></a>
+      </div>
+
+      <div class="svc reveal" style="--d:0s">
+        <span class="ghost" data-edit="svc4-no" contenteditable="true">04</span>
+        <div class="ic mb-6"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 9 4.9V17L12 22l-9-4.9V7z"/><path d="m12 22 9-4.9M12 22V12M12 12 3 7.1M12 12l9-4.9"/></svg></div>
+        <h3 class="font-display font-bold text-xl mb-3" data-edit="svc4-t" contenteditable="true">品牌视觉设计</h3>
+        <p class="mut text-sm leading-relaxed" data-edit="svc4-d" contenteditable="true">Logo、VI 系统与设计规范，为品牌建立统一而有记忆点的视觉语言。</p>
+        <a href="#contact" class="inline-flex items-center gap-2 mt-6 text-sm font-medium acc"><span data-edit="svc4-link" contenteditable="true">咨询此服务</span>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7 7 7-7 7"/></svg></a>
+      </div>
+
+      <div class="svc reveal" style="--d:.1s">
+        <span class="ghost" data-edit="svc5-no" contenteditable="true">05</span>
+        <div class="ic mb-6"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+        <h3 class="font-display font-bold text-xl mb-3" data-edit="svc5-t" contenteditable="true">交互动效设计</h3>
+        <p class="mut text-sm leading-relaxed" data-edit="svc5-d" contenteditable="true">GSAP / Lottie / WebGL 微交互与叙事动效，让界面拥有生命力与情绪。</p>
+        <a href="#contact" class="inline-flex items-center gap-2 mt-6 text-sm font-medium acc"><span data-edit="svc5-link" contenteditable="true">咨询此服务</span>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7 7 7-7 7"/></svg></a>
+      </div>
+
+      <div class="svc reveal" style="--d:.2s">
+        <span class="ghost" data-edit="svc6-no" contenteditable="true">06</span>
+        <div class="ic mb-6"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></div>
+        <h3 class="font-display font-bold text-xl mb-3" data-edit="svc6-t" contenteditable="true">性能与 SEO</h3>
+        <p class="mut text-sm leading-relaxed" data-edit="svc6-d" contenteditable="true">Core Web Vitals 优化、无障碍改造与搜索引擎优化，让好产品被更多人看见。</p>
+        <a href="#contact" class="inline-flex items-center gap-2 mt-6 text-sm font-medium acc"><span data-edit="svc6-link" contenteditable="true">咨询此服务</span>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7 7 7-7 7"/></svg></a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ 技能 ============ -->
+<section id="skills" class="py-24 md:py-32">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="reveal sec-label mb-5"><span class="num" data-edit="sec-sk-num" contenteditable="true">03</span><span data-edit="sec-sk" contenteditable="true">专业技能</span><span class="ln"></span></div>
+    <h2 class="reveal font-display font-extrabold display-2 mb-14" style="--d:.08s"><span data-edit="sk-h2a" contenteditable="true">我的</span><span class="grad-text" data-edit="sk-h2b" contenteditable="true">技术栈</span><span data-edit="sk-h2c" contenteditable="true">与工具箱</span></h2>
+    <div class="grid lg:grid-cols-2 gap-x-16 gap-y-12">
+      <div>
+        <h3 class="reveal mono text-sm mut tracking-widest mb-7 flex items-center gap-3"><span class="w-8 h-px" style="background:var(--accent)"></span><span data-edit="sk-cat1" contenteditable="true">开发技能 / DEVELOPMENT</span></h3>
+        <div class="space-y-6">
+          <div class="reveal" data-skill style="--d:0s"><div class="flex justify-between items-baseline mb-2.5"><span class="font-medium text-[.95rem]" data-edit="sk-d1-n" contenteditable="true">HTML / CSS</span><span class="mono text-sm acc font-bold" data-edit="sk-d1-v" data-sk-val contenteditable="true">95%</span></div><div class="h-[7px] rounded-full" style="background:color-mix(in srgb,var(--text) 8%,transparent)"><div class="skill-fill" data-w="95"></div></div></div>
+          <div class="reveal" data-skill style="--d:.07s"><div class="flex justify-between items-baseline mb-2.5"><span class="font-medium text-[.95rem]" data-edit="sk-d2-n" contenteditable="true">JavaScript / TypeScript</span><span class="mono text-sm acc font-bold" data-edit="sk-d2-v" data-sk-val contenteditable="true">92%</span></div><div class="h-[7px] rounded-full" style="background:color-mix(in srgb,var(--text) 8%,transparent)"><div class="skill-fill" data-w="92"></div></div></div>
+          <div class="reveal" data-skill style="--d:.14s"><div class="flex justify-between items-baseline mb-2.5"><span class="font-medium text-[.95rem]" data-edit="sk-d3-n" contenteditable="true">React / Next.js</span><span class="mono text-sm acc font-bold" data-edit="sk-d3-v" data-sk-val contenteditable="true">90%</span></div><div class="h-[7px] rounded-full" style="background:color-mix(in srgb,var(--text) 8%,transparent)"><div class="skill-fill" data-w="90"></div></div></div>
+          <div class="reveal" data-skill style="--d:.21s"><div class="flex justify-between items-baseline mb-2.5"><span class="font-medium text-[.95rem]" data-edit="sk-d4-n" contenteditable="true">Vue / Nuxt</span><span class="mono text-sm acc font-bold" data-edit="sk-d4-v" data-sk-val contenteditable="true">85%</span></div><div class="h-[7px] rounded-full" style="background:color-mix(in srgb,var(--text) 8%,transparent)"><div class="skill-fill" data-w="85"></div></div></div>
+          <div class="reveal" data-skill style="--d:.28s"><div class="flex justify-between items-baseline mb-2.5"><span class="font-medium text-[.95rem]" data-edit="sk-d5-n" contenteditable="true">Node.js / Express</span><span class="mono text-sm acc font-bold" data-edit="sk-d5-v" data-sk-val contenteditable="true">80%</span></div><div class="h-[7px] rounded-full" style="background:color-mix(in srgb,var(--text) 8%,transparent)"><div class="skill-fill" data-w="80"></div></div></div>
+          <div class="reveal" data-skill style="--d:.35s"><div class="flex justify-between items-baseline mb-2.5"><span class="font-medium text-[.95rem]" data-edit="sk-d6-n" contenteditable="true">Three.js / WebGL</span><span class="mono text-sm acc font-bold" data-edit="sk-d6-v" data-sk-val contenteditable="true">72%</span></div><div class="h-[7px] rounded-full" style="background:color-mix(in srgb,var(--text) 8%,transparent)"><div class="skill-fill" data-w="72"></div></div></div>
+        </div>
+      </div>
+      <div>
+        <h3 class="reveal mono text-sm mut tracking-widest mb-7 flex items-center gap-3"><span class="w-8 h-px" style="background:var(--accent)"></span><span data-edit="sk-cat2" contenteditable="true">软技能 / PROFESSIONAL</span></h3>
+        <div class="space-y-6">
+          <div class="reveal" data-skill style="--d:0s"><div class="flex justify-between items-baseline mb-2.5"><span class="font-medium text-[.95rem]" data-edit="sk-s1-n" contenteditable="true">沟通与表达</span><span class="mono text-sm acc font-bold" data-edit="sk-s1-v" data-sk-val contenteditable="true">90%</span></div><div class="h-[7px] rounded-full" style="background:color-mix(in srgb,var(--text) 8%,transparent)"><div class="skill-fill" data-w="90"></div></div></div>
+          <div class="reveal" data-skill style="--d:.07s"><div class="flex justify-between items-baseline mb-2.5"><span class="font-medium text-[.95rem]" data-edit="sk-s2-n" contenteditable="true">团队协作</span><span class="mono text-sm acc font-bold" data-edit="sk-s2-v" data-sk-val contenteditable="true">92%</span></div><div class="h-[7px] rounded-full" style="background:color-mix(in srgb,var(--text) 8%,transparent)"><div class="skill-fill" data-w="92"></div></div></div>
+          <div class="reveal" data-skill style="--d:.14s"><div class="flex justify-between items-baseline mb-2.5"><span class="font-medium text-[.95rem]" data-edit="sk-s3-n" contenteditable="true">项目管理</span><span class="mono text-sm acc font-bold" data-edit="sk-s3-v" data-sk-val contenteditable="true">85%</span></div><div class="h-[7px] rounded-full" style="background:color-mix(in srgb,var(--text) 8%,transparent)"><div class="skill-fill" data-w="85"></div></div></div>
+          <div class="reveal" data-skill style="--d:.21s"><div class="flex justify-between items-baseline mb-2.5"><span class="font-medium text-[.95rem]" data-edit="sk-s4-n" contenteditable="true">创新与问题解决</span><span class="mono text-sm acc font-bold" data-edit="sk-s4-v" data-sk-val contenteditable="true">95%</span></div><div class="h-[7px] rounded-full" style="background:color-mix(in srgb,var(--text) 8%,transparent)"><div class="skill-fill" data-w="95"></div></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="reveal mt-16 rounded-3xl border bd bg-card p-7 md:p-9">
+      <h3 class="mono text-sm mut tracking-widest mb-6 flex items-center gap-3"><span class="w-8 h-px" style="background:var(--accent)"></span><span data-edit="sk-cat3" contenteditable="true">常用工具 / DAILY TOOLS</span></h3>
+      <div class="flex flex-wrap gap-2.5">
+        <span class="chip hoverable !py-2 !px-4 !text-[.85rem]" data-edit="tool-1" contenteditable="true">Figma</span>
+        <span class="chip hoverable !py-2 !px-4 !text-[.85rem]" data-edit="tool-2" contenteditable="true">Photoshop</span>
+        <span class="chip hoverable !py-2 !px-4 !text-[.85rem]" data-edit="tool-3" contenteditable="true">Illustrator</span>
+        <span class="chip hoverable !py-2 !px-4 !text-[.85rem]" data-edit="tool-4" contenteditable="true">After Effects</span>
+        <span class="chip hoverable !py-2 !px-4 !text-[.85rem]" data-edit="tool-5" contenteditable="true">Blender</span>
+        <span class="chip hoverable !py-2 !px-4 !text-[.85rem]" data-edit="tool-6" contenteditable="true">Git</span>
+        <span class="chip hoverable !py-2 !px-4 !text-[.85rem]" data-edit="tool-7" contenteditable="true">Docker</span>
+        <span class="chip hoverable !py-2 !px-4 !text-[.85rem]" data-edit="tool-8" contenteditable="true">Tailwind CSS</span>
+        <span class="chip hoverable !py-2 !px-4 !text-[.85rem]" data-edit="tool-9" contenteditable="true">GSAP</span>
+        <span class="chip hoverable !py-2 !px-4 !text-[.85rem]" data-edit="tool-10" contenteditable="true">Vite</span>
+        <span class="chip hoverable !py-2 !px-4 !text-[.85rem]" data-edit="tool-11" contenteditable="true">Firebase</span>
+        <span class="chip hoverable !py-2 !px-4 !text-[.85rem]" data-edit="tool-12" contenteditable="true">MongoDB</span>
+        <span class="chip hoverable !py-2 !px-4 !text-[.85rem]" data-edit="tool-13" contenteditable="true">Notion</span>
+        <span class="chip hoverable !py-2 !px-4 !text-[.85rem]" data-edit="tool-14" contenteditable="true">Linear</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 经历（教育 / 工作） ============ -->
+<section id="experience" class="py-24 md:py-32 bg-soft">
+  <div class="max-w-5xl mx-auto px-6">
+    <div class="reveal sec-label mb-5 justify-center"><span class="num" data-edit="sec-ex-num" contenteditable="true">04</span><span data-edit="sec-ex" contenteditable="true">我的旅程</span><span class="ln"></span></div>
+    <h2 class="reveal font-display font-extrabold display-2 text-center" style="--d:.08s"><span data-edit="ex-h2a" contenteditable="true">教育背景</span> <span class="grad-text" data-edit="ex-h2b" contenteditable="true">&</span> <span data-edit="ex-h2c" contenteditable="true">工作经历</span></h2>
+    <div class="reveal flex justify-center gap-3 mt-9 mb-12" style="--d:.14s">
+      <button class="tab-btn on" data-tab="edu">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+        <span data-edit="tab-edu" contenteditable="true">教育经历</span></button>
+      <button class="tab-btn" data-tab="work">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+        <span data-edit="tab-work" contenteditable="true">工作经历</span></button>
+    </div>
+    <div id="panel-edu" class="tab-panel show"><div class="timeline">
+      <div class="t-item reveal" style="--d:0s">
+        <span class="chip mono !text-[.72rem] !py-1" style="border-color:color-mix(in srgb,var(--accent) 45%,var(--line));color:var(--accent)" data-edit="edu1-d" contenteditable="true">2016 — 2020</span>
+        <h3 class="font-display font-bold text-lg mt-3" data-edit="edu1-t" contenteditable="true">浙江大学 · 数字媒体技术（本科）</h3>
+        <p class="mut text-sm mt-2 leading-relaxed max-w-2xl" data-edit="edu1-x" contenteditable="true">主修交互设计、Web 技术与计算机图形学，GPA 3.8 / 4.0，曾获国家奖学金与校优秀毕业生。</p>
+      </div>
+      <div class="t-item reveal" style="--d:.08s">
+        <span class="chip mono !text-[.72rem] !py-1" style="border-color:color-mix(in srgb,var(--accent) 45%,var(--line));color:var(--accent)" data-edit="edu2-d" contenteditable="true">2020 — 2022</span>
+        <h3 class="font-display font-bold text-lg mt-3" data-edit="edu2-t" contenteditable="true">中国美术学院 · 设计学（硕士）</h3>
+        <p class="mut text-sm mt-2 leading-relaxed max-w-2xl" data-edit="edu2-x" contenteditable="true">研究方向为人机交互与信息可视化，毕业设计《城市脉搏》获校级优秀毕业设计并参展。</p>
+      </div>
+      <div class="t-item reveal" style="--d:.16s">
+        <span class="chip mono !text-[.72rem] !py-1" style="border-color:color-mix(in srgb,var(--accent) 45%,var(--line));color:var(--accent)" data-edit="edu3-d" contenteditable="true">2021</span>
+        <h3 class="font-display font-bold text-lg mt-3" data-edit="edu3-t" contenteditable="true">Google UX Design 专业证书</h3>
+        <p class="mut text-sm mt-2 leading-relaxed max-w-2xl" data-edit="edu3-x" contenteditable="true">在 Coursera 系统完成用户研究、可用性测试与原型设计七大课程模块。</p>
+      </div>
+      <div class="t-item reveal" style="--d:.24s">
+        <span class="chip mono !text-[.72rem] !py-1" style="border-color:color-mix(in srgb,var(--accent) 45%,var(--line));color:var(--accent)" data-edit="edu4-d" contenteditable="true">2023</span>
+        <h3 class="font-display font-bold text-lg mt-3" data-edit="edu4-t" contenteditable="true">AWS Certified Developer – Associate</h3>
+        <p class="mut text-sm mt-2 leading-relaxed max-w-2xl" data-edit="edu4-x" contenteditable="true">云原生应用开发、部署与运维能力认证，拓展全栈视野。</p>
+      </div>
+    </div></div>
+    <div id="panel-work" class="tab-panel"><div class="timeline">
+      <div class="t-item reveal" style="--d:0s">
+        <span class="chip mono !text-[.72rem] !py-1" style="border-color:color-mix(in srgb,var(--accent) 45%,var(--line));color:var(--accent)" data-edit="wk1-d" contenteditable="true">2020 — 2021</span>
+        <h3 class="font-display font-bold text-lg mt-3" data-edit="wk1-t" contenteditable="true">字节跳动 · 前端工程师</h3>
+        <p class="mut text-sm mt-2 leading-relaxed max-w-2xl" data-edit="wk1-x" contenteditable="true">负责抖音创作者服务平台核心模块开发，主导首屏性能优化，LCP 提升 40%。</p>
+      </div>
+      <div class="t-item reveal" style="--d:.08s">
+        <span class="chip mono !text-[.72rem] !py-1" style="border-color:color-mix(in srgb,var(--accent) 45%,var(--line));color:var(--accent)" data-edit="wk2-d" contenteditable="true">2021 — 2023</span>
+        <h3 class="font-display font-bold text-lg mt-3" data-edit="wk2-t" contenteditable="true">蚂蚁集团 · 高级前端工程师</h3>
+        <p class="mut text-sm mt-2 leading-relaxed max-w-2xl" data-edit="wk2-x" contenteditable="true">主导金融级中后台设计系统建设，组件库支撑 30+ 业务线接入，覆盖百万级商户。</p>
+      </div>
+      <div class="t-item reveal" style="--d:.16s">
+        <span class="chip mono !text-[.72rem] !py-1" style="border-color:color-mix(in srgb,var(--accent) 45%,var(--line));color:var(--accent)" data-edit="wk3-d" contenteditable="true">2023 — 至今</span>
+        <h3 class="font-display font-bold text-lg mt-3" data-edit="wk3-t" contenteditable="true">独立创意开发者</h3>
+        <p class="mut text-sm mt-2 leading-relaxed max-w-2xl" data-edit="wk3-x" contenteditable="true">为全球品牌与初创公司提供「设计 + 开发」一体化服务，累计交付 50+ 项目。</p>
+      </div>
+      <div class="t-item reveal" style="--d:.24s">
+        <span class="chip mono !text-[.72rem] !py-1" style="border-color:color-mix(in srgb,var(--accent) 45%,var(--line));color:var(--accent)" data-edit="wk4-d" contenteditable="true">2024</span>
+        <h3 class="font-display font-bold text-lg mt-3" data-edit="wk4-t" contenteditable="true">Awwwards · Honorable Mention</h3>
+        <p class="mut text-sm mt-2 leading-relaxed max-w-2xl" data-edit="wk4-x" contenteditable="true">个人实验项目「Chrome Dreams」获 Awwwards 荣誉提名，并入选 FWA 每日推荐。</p>
+      </div>
+    </div></div>
+  </div>
+</section>
+
+<!-- ============ 项目作品 ============ -->
+<section id="projects" class="py-24 md:py-32">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-10">
+      <div>
+        <div class="reveal sec-label mb-5"><span class="num" data-edit="sec-pj-num" contenteditable="true">05</span><span data-edit="sec-pj" contenteditable="true">精选作品</span><span class="ln"></span></div>
+        <h2 class="reveal font-display font-extrabold display-2" style="--d:.08s"><span data-edit="pj-h2a" contenteditable="true">值得一看的</span><span class="grad-text" data-edit="pj-h2b" contenteditable="true">项目</span></h2>
+      </div>
+      <p class="reveal mut max-w-sm text-sm leading-relaxed" style="--d:.14s" data-edit="pj-intro" contenteditable="true">每一个项目都是一次设计与工程的共舞。点击分类筛选查看。</p>
+    </div>
+    <div class="reveal flex flex-wrap gap-2.5 mb-11" style="--d:.1s">
+      <button class="filter-btn on" data-group="projects" data-filter="all">全部</button>
+      <button class="filter-btn" data-group="projects" data-filter="web">Web 开发</button>
+      <button class="filter-btn" data-group="projects" data-filter="app">移动应用</button>
+      <button class="filter-btn" data-group="projects" data-filter="ui">UI 设计</button>
+      <button class="filter-btn" data-group="projects" data-filter="brand">品牌设计</button>
+    </div>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-7">
+
+      <article class="project-card reveal" data-cat="web" style="--d:0s">
+        <div class="rounded-[1.2rem] border bd bg-card overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl">
+          <div class="art">
+            <div class="art-inner absolute inset-0 a1"></div>
+            <span class="big-no" data-edit="pj1-no" contenteditable="true">01</span>
+            <span class="art-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg></span>
+            <div class="ovl"></div>
+            <a href="#contact" class="go-btn" aria-label="查看项目"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
+          </div>
+          <div class="p-6">
+            <span class="mono text-[.7rem] acc tracking-widest uppercase" data-edit="pj1-cat" contenteditable="true">Web 开发</span>
+            <h3 class="font-display font-bold text-lg mt-2" data-edit="pj1-t" contenteditable="true">Nova 金融数据仪表盘</h3>
+            <p class="mut text-sm mt-2 leading-relaxed" data-edit="pj1-d" contenteditable="true">为金融科技公司打造的实时数据可视化平台，支持千万级数据点流畅渲染。</p>
+            <div class="flex flex-wrap gap-2 mt-4">
+              <span class="chip !text-[.72rem] !py-1" data-edit="pj1-tag1" contenteditable="true">React</span>
+              <span class="chip !text-[.72rem] !py-1" data-edit="pj1-tag2" contenteditable="true">D3.js</span>
+              <span class="chip !text-[.72rem] !py-1" data-edit="pj1-tag3" contenteditable="true">WebSocket</span>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="project-card reveal" data-cat="app" style="--d:.09s">
+        <div class="rounded-[1.2rem] border bd bg-card overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl">
+          <div class="art">
+            <div class="art-inner absolute inset-0 a2"></div>
+            <span class="big-no" data-edit="pj2-no" contenteditable="true">02</span>
+            <span class="art-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M12 18h.01"/></svg></span>
+            <div class="ovl"></div>
+            <a href="#contact" class="go-btn" aria-label="查看项目"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
+          </div>
+          <div class="p-6">
+            <span class="mono text-[.7rem] acc tracking-widest uppercase" data-edit="pj2-cat" contenteditable="true">移动应用</span>
+            <h3 class="font-display font-bold text-lg mt-2" data-edit="pj2-t" contenteditable="true">LUMIÈRE 时尚电商 App</h3>
+            <p class="mut text-sm mt-2 leading-relaxed" data-edit="pj2-d" contenteditable="true">高端时尚电商应用，包含 AR 试穿、个性化推荐与一键结算体验。</p>
+            <div class="flex flex-wrap gap-2 mt-4">
+              <span class="chip !text-[.72rem] !py-1" data-edit="pj2-tag1" contenteditable="true">React Native</span>
+              <span class="chip !text-[.72rem] !py-1" data-edit="pj2-tag2" contenteditable="true">Stripe</span>
+              <span class="chip !text-[.72rem] !py-1" data-edit="pj2-tag3" contenteditable="true">GraphQL</span>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="project-card reveal" data-cat="brand" style="--d:.18s">
+        <div class="rounded-[1.2rem] border bd bg-card overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl">
+          <div class="art">
+            <div class="art-inner absolute inset-0 a3"></div>
+            <span class="big-no" data-edit="pj3-no" contenteditable="true">03</span>
+            <span class="art-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 9 4.9V17L12 22l-9-4.9V7z"/><path d="m12 22V12m0 0L3 7.1m9 4.9 9-4.9"/></svg></span>
+            <div class="ovl"></div>
+            <a href="#contact" class="go-btn" aria-label="查看项目"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
+          </div>
+          <div class="p-6">
+            <span class="mono text-[.7rem] acc tracking-widest uppercase" data-edit="pj3-cat" contenteditable="true">品牌设计</span>
+            <h3 class="font-display font-bold text-lg mt-2" data-edit="pj3-t" contenteditable="true">山雾茶集 · 品牌识别</h3>
+            <p class="mut text-sm mt-2 leading-relaxed" data-edit="pj3-d" contenteditable="true">从 Logo 到包装的完整品牌视觉系统，东方茶文化的现代演绎。</p>
+            <div class="flex flex-wrap gap-2 mt-4">
+              <span class="chip !text-[.72rem] !py-1" data-edit="pj3-tag1" contenteditable="true">VI 系统</span>
+              <span class="chip !text-[.72rem] !py-1" data-edit="pj3-tag2" contenteditable="true">包装</span>
+              <span class="chip !text-[.72rem] !py-1" data-edit="pj3-tag3" contenteditable="true">字体</span>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="project-card reveal" data-cat="web" style="--d:0s">
+        <div class="rounded-[1.2rem] border bd bg-card overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl">
+          <div class="art">
+            <div class="art-inner absolute inset-0 a4"></div>
+            <span class="big-no" data-edit="pj4-no" contenteditable="true">04</span>
+            <span class="art-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span>
+            <div class="ovl"></div>
+            <a href="#contact" class="go-btn" aria-label="查看项目"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
+          </div>
+          <div class="p-6">
+            <span class="mono text-[.7rem] acc tracking-widest uppercase" data-edit="pj4-cat" contenteditable="true">Web 开发</span>
+            <h3 class="font-display font-bold text-lg mt-2" data-edit="pj4-t" contenteditable="true">Wanderlust 旅行预订平台</h3>
+            <p class="mut text-sm mt-2 leading-relaxed" data-edit="pj4-d" contenteditable="true">沉浸式旅行预订体验，集成地图探索、智能行程规划与实时库存。</p>
+            <div class="flex flex-wrap gap-2 mt-4">
+              <span class="chip !text-[.72rem] !py-1" data-edit="pj4-tag1" contenteditable="true">Next.js</span>
+              <span class="chip !text-[.72rem] !py-1" data-edit="pj4-tag2" contenteditable="true">Mapbox</span>
+              <span class="chip !text-[.72rem] !py-1" data-edit="pj4-tag3" contenteditable="true">Prisma</span>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="project-card reveal" data-cat="ui" style="--d:.09s">
+        <div class="rounded-[1.2rem] border bd bg-card overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl">
+          <div class="art">
+            <div class="art-inner absolute inset-0 a5"></div>
+            <span class="big-no" data-edit="pj5-no" contenteditable="true">05</span>
+            <span class="art-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span>
+            <div class="ovl"></div>
+            <a href="#contact" class="go-btn" aria-label="查看项目"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
+          </div>
+          <div class="p-6">
+            <span class="mono text-[.7rem] acc tracking-widest uppercase" data-edit="pj5-cat" contenteditable="true">UI 设计</span>
+            <h3 class="font-display font-bold text-lg mt-2" data-edit="pj5-t" contenteditable="true">Pulse 智能健康穿戴</h3>
+            <p class="mut text-sm mt-2 leading-relaxed" data-edit="pj5-d" contenteditable="true">智能手表与手机端健康应用界面设计，让复杂健康数据一目了然。</p>
+            <div class="flex flex-wrap gap-2 mt-4">
+              <span class="chip !text-[.72rem] !py-1" data-edit="pj5-tag1" contenteditable="true">Figma</span>
+              <span class="chip !text-[.72rem] !py-1" data-edit="pj5-tag2" contenteditable="true">ProtoPie</span>
+              <span class="chip !text-[.72rem] !py-1" data-edit="pj5-tag3" contenteditable="true">设计系统</span>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="project-card reveal" data-cat="ui" style="--d:.18s">
+        <div class="rounded-[1.2rem] border bd bg-card overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl">
+          <div class="art">
+            <div class="art-inner absolute inset-0 a6"></div>
+            <span class="big-no" data-edit="pj6-no" contenteditable="true">06</span>
+            <span class="art-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg></span>
+            <div class="ovl"></div>
+            <a href="#contact" class="go-btn" aria-label="查看项目"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
+          </div>
+          <div class="p-6">
+            <span class="mono text-[.7rem] acc tracking-widest uppercase" data-edit="pj6-cat" contenteditable="true">UI 设计</span>
+            <h3 class="font-display font-bold text-lg mt-2" data-edit="pj6-t" contenteditable="true">Chrome Dreams 动效艺术</h3>
+            <p class="mut text-sm mt-2 leading-relaxed" data-edit="pj6-d" contenteditable="true">实验性 3D 动效网页，探索金属质感与流体形态的视觉边界。</p>
+            <div class="flex flex-wrap gap-2 mt-4">
+              <span class="chip !text-[.72rem] !py-1" data-edit="pj6-tag1" contenteditable="true">Three.js</span>
+              <span class="chip !text-[.72rem] !py-1" data-edit="pj6-tag2" contenteditable="true">GSAP</span>
+              <span class="chip !text-[.72rem] !py-1" data-edit="pj6-tag3" contenteditable="true">Blender</span>
+            </div>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ 视频 ============ -->
+<section id="videos" class="py-24 md:py-32 bg-soft relative overflow-hidden">
+  <div class="orb orb-2" style="top:-140px;left:auto;right:-120px;bottom:auto"></div>
+  <div class="max-w-7xl mx-auto px-6 relative z-10">
+    <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-10">
+      <div>
+        <div class="reveal sec-label mb-5"><span class="num" data-edit="sec-vd-num" contenteditable="true">06</span><span data-edit="sec-vd" contenteditable="true">视频实验室</span><span class="ln"></span></div>
+        <h2 class="reveal font-display font-extrabold display-2" style="--d:.08s"><span data-edit="vd-h2a" contenteditable="true">影像与</span><span class="grad-text" data-edit="vd-h2b" contenteditable="true">动效收藏</span></h2>
+      </div>
+      <p class="reveal mut max-w-sm text-sm leading-relaxed" style="--d:.14s" data-edit="vd-intro" contenteditable="true">我喜爱的开源电影与广告片 —— 悬停封面即可预览，点击进入沉浸播放。</p>
+    </div>
+    <div class="reveal flex flex-wrap gap-2.5 mb-11" style="--d:.1s">
+      <button class="filter-btn on" data-group="videos" data-filter="all">全部</button>
+      <button class="filter-btn" data-group="videos" data-filter="anim">动画短片</button>
+      <button class="filter-btn" data-group="videos" data-filter="ad">商业广告</button>
+      <button class="filter-btn" data-group="videos" data-filter="brand">品牌宣传</button>
+    </div>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-7" id="videoGrid"></div>
+  </div>
+</section>
+
+<!-- ============ 联系 ============ -->
+<section id="contact" class="py-24 md:py-32">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="reveal sec-label mb-5"><span class="num" data-edit="sec-ct-num" contenteditable="true">07</span><span data-edit="sec-ct" contenteditable="true">联系我</span><span class="ln"></span></div>
+    <div class="grid lg:grid-cols-5 gap-12 lg:gap-16">
+      <div class="lg:col-span-2">
+        <h2 class="reveal font-display font-extrabold display-2" style="--d:.06s"><span data-edit="ct-h2a" contenteditable="true">有个好点子？</span><br><span class="grad-text" data-edit="ct-h2b" contenteditable="true">聊聊吧</span></h2>
+        <p class="reveal mt-5 mut leading-relaxed text-[.95rem]" style="--d:.12s" data-edit="ct-intro" contenteditable="true">无论是产品合作、全职机会还是单纯想打个招呼，我的收件箱永远向你敞开。通常我会在 24 小时内回复。</p>
+        <div class="mt-9 space-y-4">
+          <div class="reveal info-card" style="--d:.16s">
+            <span class="w-11 h-11 rounded-xl flex items-center justify-center shrink-0" style="background:color-mix(in srgb,var(--accent) 13%,transparent)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg></span>
+            <span><span class="block mono text-[.7rem] mut tracking-widest" data-edit="ct-email-l" contenteditable="true">EMAIL</span><span class="font-medium" data-edit="ct-email" contenteditable="true">hello@yizhou.design</span></span>
+          </div>
+          <div class="reveal info-card" style="--d:.2s">
+            <span class="w-11 h-11 rounded-xl flex items-center justify-center shrink-0" style="background:color-mix(in srgb,var(--accent) 13%,transparent)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.08 4.18 2 2 0 0 1 4.06 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>
+            <span><span class="block mono text-[.7rem] mut tracking-widest" data-edit="ct-phone-l" contenteditable="true">PHONE</span><span class="font-medium" data-edit="ct-phone" contenteditable="true">+86 138-0000-8888</span></span>
+          </div>
+          <div class="reveal info-card" style="--d:.24s">
+            <span class="w-11 h-11 rounded-xl flex items-center justify-center shrink-0" style="background:color-mix(in srgb,var(--accent) 13%,transparent)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg></span>
+            <span><span class="block mono text-[.7rem] mut tracking-widest" data-edit="ct-loc-l" contenteditable="true">LOCATION</span><span class="font-medium" data-edit="ct-loc" contenteditable="true">中国 · 杭州（支持远程协作）</span></span>
+          </div>
+        </div>
+        <div class="reveal flex gap-3 mt-8" style="--d:.28s">
+          <a href="#" class="soc" aria-label="GitHub"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg></a>
+          <a href="#" class="soc" aria-label="LinkedIn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></a>
+          <a href="#" class="soc" aria-label="X"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+          <a href="#" class="soc" aria-label="Dribbble"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M19.13 5.09C15.22 9.14 10 10.44 2.25 10.94m19.5 1.9c-6.62-1.41-12.14 1-16.38 6.32M8.56 2.75c4.37 6 6 9.42 8 17.72"/></svg></a>
+        </div>
+      </div>
+      <div class="lg:col-span-3">
+        <form id="contactForm" class="reveal rv-right rounded-3xl border bd bg-card p-7 md:p-9 shadow-2xl" style="--d:.15s" novalidate>
+          <div class="grid sm:grid-cols-2 gap-5">
+            <div>
+              <label class="block text-sm font-medium mb-2" for="cName"><span data-edit="form-name-l" contenteditable="true">你的姓名</span> <span class="acc">*</span></label>
+              <input class="field" id="cName" type="text" placeholder="怎么称呼你？">
+              <p class="err-msg" id="eName">请输入你的姓名</p>
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-2" for="cEmail"><span data-edit="form-email-l" contenteditable="true">电子邮箱</span> <span class="acc">*</span></label>
+              <input class="field" id="cEmail" type="email" placeholder="name@example.com">
+              <p class="err-msg" id="eEmail">请输入有效的邮箱地址</p>
+            </div>
+          </div>
+          <div class="mt-5">
+            <label class="block text-sm font-medium mb-2" for="cSubject" data-edit="form-subject-l" contenteditable="true">咨询主题</label>
+            <select class="field" id="cSubject">
+              <option>项目合作</option><option>全职机会</option><option>技术咨询</option><option>随便聊聊</option>
+            </select>
+          </div>
+          <div class="mt-5">
+            <label class="block text-sm font-medium mb-2" for="cMsg"><span data-edit="form-msg-l" contenteditable="true">留言内容</span> <span class="acc">*</span></label>
+            <textarea class="field resize-none" id="cMsg" rows="5" placeholder="简单描述一下你的想法、预算或时间线…"></textarea>
+            <p class="err-msg" id="eMsg">请填写留言内容（至少 10 个字符）</p>
+          </div>
+          <button type="submit" class="btn btn-primary w-full justify-center mt-7 !py-4">
+            <span id="sendLabel" data-edit="form-submit" contenteditable="true">发送消息</span>
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+          </button>
+          <p class="mut text-xs text-center mt-4" data-edit="form-note" contenteditable="true">提交后将调起你的邮件客户端发送，也可直接写信至 hello@yizhou.design</p>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ============ 页脚 ============ -->
+<footer class="border-t bd bg-soft">
+  <div class="max-w-7xl mx-auto px-6 py-14">
+    <div class="grid md:grid-cols-3 gap-10">
+      <div>
+        <a href="#home" class="font-display font-extrabold text-2xl"><span data-edit="ft-logo" contenteditable="true">热心市民YWY</span><span class="acc">.</span></a>
+        <p class="mut text-sm mt-4 leading-relaxed max-w-xs" data-edit="ft-desc" contenteditable="true">创意开发者 & UI 设计师，用代码与设计构建令人难忘的数字体验。</p>
+      </div>
+      <div>
+        <h4 class="mono text-xs mut tracking-widest mb-5" data-edit="ft-nav-h" contenteditable="true">快速导航 / SITEMAP</h4>
+        <ul class="grid grid-cols-2 gap-x-6 gap-y-2.5">
+          <li><a class="f-link" href="#home">首页</a></li><li><a class="f-link" href="#about">关于我</a></li>
+          <li><a class="f-link" href="#services">服务</a></li><li><a class="f-link" href="#skills">技能</a></li>
+          <li><a class="f-link" href="#experience">经历</a></li><li><a class="f-link" href="#projects">作品</a></li>
+          <li><a class="f-link" href="#videos">视频</a></li><li><a class="f-link" href="#contact">联系</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="mono text-xs mut tracking-widest mb-5" data-edit="ft-hello-h" contenteditable="true">保持联系 / SAY HELLO</h4>
+        <p class="text-sm mut" data-edit="ft-email" contenteditable="true">hello@yizhou.design</p>
+        <p class="text-sm mut mt-1.5" data-edit="ft-loc" contenteditable="true">中国 · 杭州 · GMT+8</p>
+        <div class="chip mt-5"><span class="pulse-dot"></span><span data-edit="ft-status" contenteditable="true">当前状态：接受新项目</span></div>
+      </div>
+    </div>
+    <div class="border-t bd mt-12 pt-7 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <p class="mut text-xs">© <span id="year" data-edit="ft-year" contenteditable="true">2025</span> <span data-edit="ft-copy" contenteditable="true">于晨阳 Yu Chenyang. 保留所有权利。</span></p>
+      <p class="mut text-xs mono" data-edit="ft-built" contenteditable="true">Designed & Built with passion — v3.0</p>
+    </div>
+  </div>
+</footer>
+
+<!-- ============ 视频播放模态框 ============ -->
+<div id="videoModal" role="dialog" aria-modal="true">
+  <div class="backdrop" data-close></div>
+  <div class="panel">
+    <div class="flex items-center justify-between gap-4 px-5 py-4 border-b bd">
+      <div class="min-w-0">
+        <h3 id="vmTitle" class="font-display font-bold text-lg truncate"></h3>
+        <p id="vmCat" class="mono text-[.7rem] acc tracking-widest mt-0.5"></p>
+      </div>
+      <button data-close class="soc !w-10 !h-10 !rounded-full shrink-0" aria-label="关闭播放器">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <video id="vmVideo" controls playsinline preload="auto" class="w-full aspect-video bg-black"></video>
+    <p id="vmDesc" class="px-5 py-4 text-sm mut leading-relaxed"></p>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span class="t-msg"></span></div>
+
+<!-- 回到顶部 -->
+<button id="toTop" aria-label="回到顶部"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 7-7 7 7M12 19V5"/></svg></button>
+
+<!-- ============ 浮动编辑面板 ============ -->
+<div id="editPanel">
+  <button id="editToggle" class="ep-btn on"><span class="ep-dot"></span><span id="editToggleLabel">编辑中 · 点击预览</span></button>
+  <button id="resetBtn" class="ep-btn">↺ 重置为初始内容</button>
+</div>
+
+<script>
+/* ==================== 视频数据（保留远程示例视频，可自行替换 src） ==================== */
+const VB='https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/';
+const VIDEOS=[
+ {src:VB+'BigBuckBunny.mp4',t:'Big Buck Bunny',cat:'anim',cl:'动画短片',dur:'9:56',d:'Blender 基金会经典开源动画：一只巨型兔子的森林复仇喜剧，画质与幽默并存。'},
+ {src:VB+'Sintel.mp4',t:'Sintel 寻龙记',cat:'anim',cl:'动画短片',dur:'14:48',d:'少女跨越雪原寻找幼龙的史诗奇幻短片，开源电影最具代表性的作品之一。'},
+ {src:VB+'ElephantsDream.mp4',t:'Elephants Dream',cat:'anim',cl:'动画短片',dur:'10:53',d:'世界上第一部完全使用开源软件制作的动画电影，一场奇异的机械梦境。'},
+ {src:VB+'TearsOfSteel.mp4',t:'Tears of Steel',cat:'anim',cl:'影视短片',dur:'12:14',d:'真人与 VFX 结合的科幻短片：四十年前的一次分手，如何拯救未来的阿姆斯特丹。'},
+ {src:VB+'ForBiggerBlazes.mp4',t:'For Bigger Blazes',cat:'ad',cl:'商业广告',dur:'0:15',d:'Chromecast 系列广告：当追剧遇到紧急时刻，15 秒讲一个完整故事。'},
+ {src:VB+'ForBiggerEscapes.mp4',t:'For Bigger Escapes',cat:'ad',cl:'商业广告',dur:'0:15',d:'极致短平快的广告叙事范本，小屏幕到大屏幕的丝滑转场。'},
+ {src:VB+'ForBiggerJoyrides.mp4',t:'For Bigger Joyrides',cat:'ad',cl:'商业广告',dur:'0:15',d:'速度与欢乐并存的 15 秒，节奏剪辑与音效设计的教科书。'},
+ {src:VB+'ForBiggerMeltdowns.mp4',t:'For Bigger Meltdowns',cat:'ad',cl:'商业广告',dur:'0:15',d:'孩子崩溃瞬间的喜剧化表达，广告创意的情绪掌控范例。'},
+ {src:VB+'ForBiggerFun.mp4',t:'For Bigger Fun',cat:'brand',cl:'品牌宣传',dur:'1:00',d:'Google 品牌宣传片：用一分钟展示「更大的乐趣」，配乐与剪辑节奏值得反复学习。'},
+ {src:VB+'SubaruOutbackOnStreetAndDirt.mp4',t:'Subaru Outback 公路与泥地',cat:'brand',cl:'品牌宣传',dur:'9:54',d:'汽车品牌的极致路况影像，长镜头调度与自然环境光的运用堪称范本。'}
+];
+
+/* ==================== 渲染视频卡片 ==================== */
+document.getElementById('videoGrid').innerHTML=VIDEOS.map((v,i)=>`
+ <article class="video-card reveal cursor-pointer" data-cat="${v.cat}" data-idx="${i}" style="--d:${(i%3)*0.09}s">
+   <div class="vc-frame">
+     <video src="${v.src}" muted playsinline preload="metadata"></video>
+     <div class="vc-shade"></div>
+     <span class="vc-badge top-3 left-3" style="background:color-mix(in srgb,var(--accent) 88%,transparent);color:var(--accent-ink);font-weight:700" data-edit="vd${i}-cat" contenteditable="true">${v.cl}</span>
+     <span class="vc-badge bottom-3 right-3"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" style="display:inline;vertical-align:-1px;margin-right:3px"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><span data-edit="vd${i}-dur" contenteditable="true">${v.dur}</span></span>
+     <span class="vc-play"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg></span>
+   </div>
+   <h3 class="font-display font-bold text-lg mt-4 transition-colors duration-300" data-edit="vd${i}-t" contenteditable="true">${v.t}</h3>
+   <p class="mut text-sm mt-1.5 leading-relaxed line-clamp-2" data-edit="vd${i}-d" contenteditable="true">${v.d}</p>
+ </article>`).join('');
+
+/* ==================== 内容持久化（localStorage） ==================== */
+const STORE_KEY='resume-edits-v1';
+function loadEdits(){ try{ return JSON.parse(localStorage.getItem(STORE_KEY))||{}; }catch(e){ return {}; } }
+function saveEdits(o){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(o)); }catch(e){} }
+const edits = loadEdits();
+
+/* 恢复已保存内容（必须在动画初始化之前） */
+document.querySelectorAll('[data-edit]').forEach(el=>{
+  const k = el.dataset.edit;
+  if(edits[k] !== undefined){
+    el.innerHTML = edits[k];
+    el.dataset.restored = '1';
+  }
+});
+
+/* 监听输入并保存 */
+document.addEventListener('input', e=>{
+  const el = e.target.closest('[data-edit]');
+  if(!el) return;
+  edits[el.dataset.edit] = el.innerHTML;
+  saveEdits(edits);
+  /* Marquee 同步：编辑第一组时同步到第二组 */
+  if(el.dataset.edit && el.dataset.edit.startsWith('mq-')){
+    document.querySelectorAll('[data-mqd="'+el.dataset.edit+'"]').forEach(d=>{ d.textContent = el.textContent; });
+  }
+});
+/* 技能百分比编辑 → 实时更新进度条 */
+document.querySelectorAll('[data-skill]').forEach(group=>{
+  const val = group.querySelector('[data-sk-val]');
+  const bar = group.querySelector('.skill-fill');
+  if(!val || !bar) return;
+  const apply = (pct)=>{ bar.style.width = Math.min(100,Math.max(0,pct))+'%'; bar.dataset.w = pct; };
+  if(val.dataset.restored === '1'){ const n = parseInt(val.textContent)||0; apply(n); bar.dataset.skip='1'; }
+  val.addEventListener('input', ()=>{ const n = parseInt(val.textContent)||0; apply(n); });
+});
+
+/* ==================== 编辑 / 预览模式切换 ==================== */
+const editToggle = document.getElementById('editToggle');
+const editToggleLabel = document.getElementById('editToggleLabel');
+const resetBtn = document.getElementById('resetBtn');
+function setEditMode(on){
+  document.body.classList.toggle('edit-mode', on);
+  document.querySelectorAll('[data-edit]').forEach(el=>{
+    if(on){ el.setAttribute('contenteditable','true'); }
+    else { el.removeAttribute('contenteditable'); }
+  });
+  editToggle.classList.toggle('on', on);
+  editToggleLabel.textContent = on ? '编辑中 · 点击预览' : '预览中 · 点击编辑';
+  try{ localStorage.setItem('yz-editmode', on?'1':'0'); }catch(e){}
+}
+editToggle.addEventListener('click', ()=> setEditMode(!document.body.classList.contains('edit-mode')));
+/* 编辑模式下点击链接不跳转（方便原地编辑文字） */
+document.addEventListener('click', e=>{
+  if(!document.body.classList.contains('edit-mode')) return;
+  const a = e.target.closest('a');
+  if(a && a.getAttribute('href')){ e.preventDefault(); }
+}, true);
+/* 重置 */
+resetBtn.addEventListener('click', ()=>{
+  if(confirm('确定要清空所有修改并恢复初始内容吗？此操作不可撤销。')){
+    try{ localStorage.removeItem(STORE_KEY); }catch(e){}
+    location.reload();
+  }
+});
+
+/* ==================== 主题切换 ==================== */
+const themeBtn=document.getElementById('themeBtn');
+themeBtn.addEventListener('click',()=>{
+  const d=document.documentElement.classList.toggle('dark');
+  try{localStorage.setItem('yz-theme',d?'dark':'light');}catch(e){}
+  toast(d?'已切换到暗色模式':'已切换到亮色模式');
+});
+
+/* ==================== 打字效果 ==================== */
+const WORDS=['前端开发','UI / UX 设计','交互动效','WebGL 创意','品牌体验'];
+let typedStarted=false;
+function startTyped(){
+  if(typedStarted)return;typedStarted=true;
+  const el=document.getElementById('typed');let wi=0,ci=0,del=false;
+  (function tick(){
+    const w=WORDS[wi];el.textContent=w.slice(0,ci);
+    if(!del){ci++;if(ci>w.length){del=true;setTimeout(tick,1700);return}}
+    else{ci--;if(ci===0){del=false;wi=(wi+1)%WORDS.length}}
+    setTimeout(tick,del?45:115);
+  })();
+}
+
+/* ==================== 导航 ==================== */
+const header=document.getElementById('header'),toTop=document.getElementById('toTop'),progress=document.getElementById('progress');
+function onScroll(){
+  const y=window.scrollY;
+  header.classList.toggle('scrolled',y>40);
+  toTop.classList.toggle('show',y>600);
+  const h=document.documentElement.scrollHeight-innerHeight;
+  progress.style.width=(h>0?(y/h*100):0)+'%';
+}
+addEventListener('scroll',onScroll,{passive:true});onScroll();
+toTop.addEventListener('click',()=>scrollTo({top:0,behavior:'smooth'}));
+
+const menuBtn=document.getElementById('menuBtn'),mobileMenu=document.getElementById('mobileMenu');
+const icoMenu=document.getElementById('icoMenu'),icoClose=document.getElementById('icoClose');
+function toggleMenu(force){
+  const open=force!==undefined?force:!mobileMenu.classList.contains('open');
+  mobileMenu.classList.toggle('open',open);
+  icoMenu.classList.toggle('hidden',open);icoClose.classList.toggle('hidden',!open);
+  document.body.style.overflow=open?'hidden':'';
+}
+menuBtn.addEventListener('click',()=>toggleMenu());
+mobileMenu.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>toggleMenu(false)));
+
+/* 当前章节高亮 */
+const navLinks=[...document.querySelectorAll('.nav-link')];
+const secIO=new IntersectionObserver(es=>{es.forEach(e=>{
+  if(e.isIntersecting)navLinks.forEach(l=>l.classList.toggle('active',l.getAttribute('href')==='#'+e.target.id));
+})},{rootMargin:'-38% 0px -55% 0px'});
+document.querySelectorAll('main section[id]').forEach(s=>secIO.observe(s));
+
+/* ==================== 教育 / 工作 Tabs ==================== */
+document.querySelectorAll('.tab-btn').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('.tab-btn').forEach(x=>x.classList.toggle('on',x===b));
+  const k=b.dataset.tab;
+  document.getElementById('panel-edu').classList.toggle('show',k==='edu');
+  document.getElementById('panel-work').classList.toggle('show',k==='work');
+  if(k==='work')document.querySelectorAll('#panel-work .reveal').forEach(el=>el.classList.add('in'));
+}));
+
+/* ==================== 筛选（项目 & 视频） ==================== */
+function setupFilter(group,cardSel){
+  const btns=[...document.querySelectorAll(`[data-group="${group}"]`)];
+  btns.forEach(b=>b.addEventListener('click',()=>{
+    btns.forEach(x=>x.classList.toggle('on',x===b));
+    const f=b.dataset.filter;
+    document.querySelectorAll(cardSel).forEach(c=>{
+      const show=f==='all'||c.dataset.cat===f;
+      clearTimeout(c._t);
+      if(show){c.classList.remove('hidden');requestAnimationFrame(()=>requestAnimationFrame(()=>c.classList.remove('card-hide')));}
+      else{c.classList.add('card-hide');c._t=setTimeout(()=>c.classList.add('hidden'),330);}
+    });
+    if(group==='videos')document.querySelectorAll('.video-card video').forEach(v=>v.pause());
+  }));
+}
+setupFilter('projects','.project-card');
+setupFilter('videos','.video-card');
+
+/* ==================== 视频：悬停预览 + 模态播放 ==================== */
+const modal=document.getElementById('videoModal'),vmVideo=document.getElementById('vmVideo');
+const vmTitle=document.getElementById('vmTitle'),vmCat=document.getElementById('vmCat'),vmDesc=document.getElementById('vmDesc');
+function openVideo(v){
+  vmTitle.textContent=v.t;vmCat.textContent=v.cl.toUpperCase()+' · '+v.dur;vmDesc.textContent=v.d;
+  vmVideo.src=v.src;modal.classList.add('show');document.body.style.overflow='hidden';
+  vmVideo.play().catch(()=>{});
+}
+function closeVideo(){
+  vmVideo.pause();vmVideo.removeAttribute('src');vmVideo.load();
+  modal.classList.remove('show');document.body.style.overflow='';
+}
+document.querySelectorAll('.video-card').forEach(card=>{
+  const v=VIDEOS[+card.dataset.idx];
+  card.addEventListener('click',()=>{
+    /* 编辑模式下不打开播放器，方便编辑文字 */
+    if(document.body.classList.contains('edit-mode')) return;
+    openVideo(v);
+  });
+  if(matchMedia('(pointer:fine)').matches){
+    const pv=card.querySelector('video');
+    card.addEventListener('mouseenter',()=>pv.play().catch(()=>{}));
+    card.addEventListener('mouseleave',()=>pv.pause());
+  }
+});
+modal.querySelectorAll('[data-close]').forEach(el=>el.addEventListener('click',closeVideo));
+addEventListener('keydown',e=>{if(e.key==='Escape'){closeVideo();toggleMenu(false);}});
+
+/* ==================== 联系表单（邮件发送） ==================== */
+const form=document.getElementById('contactForm');
+const emailRe=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+function setErr(input,msg,bad){input.classList.toggle('err-b',bad);msg.classList.toggle('show',bad);return !bad;}
+form.addEventListener('submit',e=>{
+  e.preventDefault();
+  const name=document.getElementById('cName'),email=document.getElementById('cEmail'),
+        subj=document.getElementById('cSubject'),msg=document.getElementById('cMsg');
+  const ok1=setErr(name,document.getElementById('eName'),!name.value.trim());
+  const ok2=setErr(email,document.getElementById('eEmail'),!emailRe.test(email.value.trim()));
+  const ok3=setErr(msg,document.getElementById('eMsg'),msg.value.trim().length<10);
+  if(!(ok1&&ok2&&ok3)){toast('请先完善表单中的必填项');return;}
+  const to=(document.querySelector('[data-edit="ct-email"]')||{}).textContent||'hello@yizhou.design';
+  const subject=encodeURIComponent('【作品集】'+subj.value+' — 来自 '+name.value.trim());
+  const body=encodeURIComponent('姓名：'+name.value.trim()+'\n邮箱：'+email.value.trim()+'\n主题：'+subj.value+'\n\n'+msg.value.trim()+'\n\n—— 通过个人作品集发送');
+  location.href='mailto:'+to+'?subject='+subject+'&body='+body;
+  toast('已为你打开邮件客户端，期待你的来信');
+  form.reset();
+});
+['cName','cEmail','cMsg'].forEach(id=>{
+  document.getElementById(id).addEventListener('input',ev=>ev.target.classList.remove('err-b'));
+});
+document.getElementById('resumeBtn').addEventListener('click',()=>toast('简历 PDF 即将上线，欢迎先邮件联系我'));
+
+/* ==================== Toast ==================== */
+const toastEl=document.getElementById('toast');
+function toast(msg){
+  toastEl.querySelector('.t-msg').textContent=msg;
+  toastEl.classList.add('show');
+  clearTimeout(toastEl._t);toastEl._t=setTimeout(()=>toastEl.classList.remove('show'),3200);
+}
+
+/* ==================== 自定义光标 ==================== */
+if(matchMedia('(pointer:fine)').matches){
+  const dot=document.getElementById('cursorDot'),ring=document.getElementById('cursorRing');
+  let mx=innerWidth/2,my=innerHeight/2,rx=mx,ry=my;
+  addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;dot.style.left=mx+'px';dot.style.top=my+'px';});
+  (function loop(){rx+=(mx-rx)*.14;ry+=(my-ry)*.14;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(loop);})();
+  document.querySelectorAll('a,button,.video-card,.svc,.filter-btn,.tab-btn').forEach(el=>{
+    el.addEventListener('mouseenter',()=>ring.classList.add('grow'));
+    el.addEventListener('mouseleave',()=>ring.classList.remove('grow'));
+  });
+}else{document.getElementById('cursorDot').remove();document.getElementById('cursorRing').remove();}
+
+/* ==================== Hero 视差 ==================== */
+const heroSec=document.getElementById('home');
+if(matchMedia('(pointer:fine)').matches){
+  heroSec.addEventListener('mousemove',e=>{
+    const cx=(e.clientX/innerWidth-.5),cy=(e.clientY/innerHeight-.5);
+    document.querySelectorAll('[data-px]').forEach(o=>{
+      const f=+o.dataset.px;o.style.translate=(cx*f)+'px '+(cy*f)+'px';
+    });
+  });
+}
+
+/* ==================== 滚动动画（Reveal / 计数 / 技能条） ==================== */
+function initObservers(){
+  const rio=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');rio.unobserve(e.target);}}),{threshold:.12,rootMargin:'0px 0px -6% 0px'});
+  document.querySelectorAll('.reveal').forEach(el=>rio.observe(el));
+  /* 计数器：若已被用户编辑（restored）则跳过动画 */
+  const cio=new IntersectionObserver(es=>es.forEach(e=>{
+    if(e.isIntersecting){cio.unobserve(e.target);
+      const el=e.target;
+      if(el.dataset.restored==='1') return;
+      const t=+el.dataset.count,d=1900,s=performance.now();
+      (function f(n){const p=Math.min((n-s)/d,1),ez=1-Math.pow(1-p,3);el.textContent=Math.round(ez*t);if(p<1)requestAnimationFrame(f);})(s);
+    }}),{threshold:.6});
+  document.querySelectorAll('[data-count]').forEach(el=>cio.observe(el));
+  /* 技能条：跳过已直接设置宽度的元素 */
+  const sio=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){if(e.target.dataset.skip==='1'){sio.unobserve(e.target);return;}e.target.style.width=e.target.dataset.w+'%';sio.unobserve(e.target);}}),{threshold:.5});
+  document.querySelectorAll('.skill-fill').forEach(el=>sio.observe(el));
+}
+
+/* ==================== 加载页 ==================== */
+(function(){
+  const bar=document.getElementById('preBar'),num=document.getElementById('preNum');let p=0;
+  const t=setInterval(()=>{
+    p+=Math.random()*13+4;
+    if(p>=100){p=100;clearInterval(t);
+      setTimeout(()=>{
+        document.getElementById('preloader').classList.add('done');
+        document.body.classList.remove('loading');
+        document.body.classList.add('loaded');
+        startTyped();initObservers();
+      },280);
+    }
+    bar.style.width=p+'%';num.textContent=Math.floor(p)+'%';
+  },90);
+})();
+
+/* 年份：仅当用户未自定义时使用当前年份 */
+(function(){
+  const yEl=document.getElementById('year');
+  if(yEl.dataset.restored!=='1'){ yEl.textContent=new Date().getFullYear(); }
+})();
+
+/* 恢复编辑 / 预览模式偏好（默认编辑模式） */
+(function(){
+  let m='1';
+  try{ m=localStorage.getItem('yz-editmode'); if(m===null) m='1'; }catch(e){}
+  if(m==='0'){ setEditMode(false); }
+})();
+
+/* 首次访问提示 */
+(function(){
+  let shown='1';
+  try{ shown=localStorage.getItem('yz-hint'); }catch(e){}
+  if(shown!=='1'){
+    setTimeout(()=>toast('点击任意文字即可直接编辑，内容会自动保存到浏览器'),1400);
+    try{ localStorage.setItem('yz-hint','1'); }catch(e){}
+  }
+})();
+</script>
+</body>
+</html>
